@@ -25,10 +25,10 @@ re_match_formats = [
     # any other tags such as genre will be wiped out.
 
     # change this
-    'music/:artist:/:album:/:artist: - :track: - :song::ext:',
+    '.*music/:artist:/:album:/:artist: - :track: - :song::ext:$',
     # other examples
-    #'(?:old)?music/:artist:/:artist: - :song::ext:',
-    #'newmusic/misc/none/:artist: - :track: - :song::ext:',
+    #'.*(?:old)?music/:artist:/:artist: - :song::ext:$',
+    #'.*newmusic/misc/none/:artist: - :track: - :song::ext:$',
 ]
 
 class FileChangeDB:
