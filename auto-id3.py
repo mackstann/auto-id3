@@ -7,11 +7,12 @@ import os, sys, re, shelve, subprocess, tempfile, shutil, bisect
 from stat import *
 
 re_decls = dict(
-    track  = r'[abcdefg\d]\d+',
+    track = r'[abcdefg\d]\d+',
+    albumartist = r'[^/]+',
     artist = r'[^/]+',
-    album  = r'[^/]+',
-    song   = r'[^/]+',
-    ext    = r'\.mp3',
+    album = r'[^/]+',
+    song = r'[^/]+',
+    ext  = r'\.mp3',
 )
 
 re_match_formats = [
@@ -63,6 +64,10 @@ def update_tags(filename, tags):
     that will only happen if the interpreter is terminated uncleanly)
     """
 
+    if 'track' in tags:
+        # get rid of leading zeroes
+        tags['track'] = str(int(tags['track']))
+
     try:
         tempf = tempfile.NamedTemporaryFile(
             prefix=filename+'.',
@@ -77,6 +82,8 @@ def update_tags(filename, tags):
 
         args = ['id3v2']
         for k, v in tags.items():
+            if k == 'albumartist':
+                k = 'TPE2'
             args += [ '--'+k, v ]
         args += [tempf.name]
         run_cmd_or_die(*args)
@@ -121,7 +128,7 @@ def get_tags_for_file(filename):
     matches = match.groupdict()
     return dict((
         (tagname, matches[tagname])
-        for tagname in ('artist', 'album', 'track', 'song')
+        for tagname in ('artist', 'albumartist', 'album', 'track', 'song')
         if matches.get(tagname)
     ))
 
